@@ -44,6 +44,10 @@ class tesla extends eqLogic {
 		curl_close($ch);
 	};
 	
+	public static function scantesla(){
+		tesla::recupToken()
+	};
+	
 	/*** ****/
 	public static function addDevice($mac,$ip,$name,$vendor,$product,$version,$port,$group) {
 		log::add('tesla', 'info', 'Produit déterminé via ID : '.tesla::modele($product), 'config');
