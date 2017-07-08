@@ -25,8 +25,8 @@ class tesla extends eqLogic {
 	public static function recupToken(){
 		// ************* DEBUT DES VARIABLES
 		$grant_type="password"; // information lié à l'appel API, NE PAS MODIFIER
-		$client_id="81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384"; // information lié à l'appel API, NE PAS MODIFIER
-		$client_secret="c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"; // information lié à l'appel API, NE PAS MODIFIER
+		$client_id="e4a9949fcfa04068f59abb5a658f2bac0a3428e4652315490b659d5ab3f35a9e"; // information lié à l'appel API, NE PAS MODIFIER
+		$client_secret="c75f14bbadc8bee3a7594412c31416f8300256d7668ea7e6e7f06727bfb9d220"; // information lié à l'appel API, NE PAS MODIFIER
 		$email = config::byKey('username', 'tesla');
 		$password = config::byKey('password', 'tesla');
 
