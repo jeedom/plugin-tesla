@@ -1,0 +1,21 @@
+== Configuration : Scanner votre réseau
+
+*Configuration* 
+
+Pour configurer le plugin, vous devez scanner votre réseau automatiquement via le plugin.
+
+Pour Ajouter des Lifx automatiquement : *Plugins* --> *Objets communicants* --> *Lifx* --> *Scanner*
+
+image::../images/doc_lifx_3.png[]
+
+Une fois le scan fini, vous verrez les Lifx détectées.
+
+image::../images/doc_lifx_4.png[]
+
+Vous pouvez alors pour les activer cliquer sur une des Lifx (qui a pris le nom que vous lui avez donné sur l'application Lifx), puis l'activer et sauvegarder pour avoir toutes les commandes associées à votre Lifx.
+
+image::../images/doc_lifx_5.png[]
+
+*Partie dashboard* :
+
+image::../images/doc_lifx_6.png[]

@@ -1,0 +1,11 @@
+== Installer le Plugin
+
+Après installation du plugin, il vous suffit de l’activer :
+
+image::../images/doc_lifx_1.png[]
+
+*Dépendances*
+
+Normalement les dépendances sont lancées automatiquement, si non il vous faudra cliquer sur *relancer*
+
+image::../images/doc_lifx_2.png[]

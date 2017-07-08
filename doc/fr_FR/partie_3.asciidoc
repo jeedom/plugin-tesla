@@ -1,0 +1,13 @@
+== Créer un nouveau mode Couleur
+
+Si une couleur que l'on applique avec l'application Lifx nous plaît, on peut facilement la récupérer dans le plugin Lifx.
+
+Il suffit pour cela de se rendre dans  *Plugins* --> *Objets communicants* --> *Lifx* --> puis choisir la lifx où on souhaite copier la couleur
+
+Puis après cliquez sur *tester* sur la commande *Créer un mode*
+
+image::../images/doc_lifx_7.png[]
+
+Il suffit de recharger la page pour voir apparaître une nouvelle commande  qui a en configuration la couleur actuelle de la Lifx. Vous pouvez à tout moment changer son nom.
+
+image::../images/doc_lifx_8.png[]

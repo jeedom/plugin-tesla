@@ -1,0 +1,11 @@
+{
+	"id" : "tesla",
+	"name" : "Tesla",
+	"description" : "Plugin permettant de contrôler les voitures Tesla",
+	"icon" : "a fa-keyboard-o",
+	"licence" : "AGPL",
+	"author" : "Rocket13011",
+	"require" : "2.3",
+	"installation" : "Aucune",
+	"category" : "devicecommunication",
+}

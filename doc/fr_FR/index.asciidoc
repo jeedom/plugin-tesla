@@ -1,0 +1,21 @@
+:icons:
+== Lifx
+
+=== Description
+Plugin permettant d'interagir avec les ampoules Lifx (en Local)
+
+'''
+=== Installer le Plugin
+include::partie_1.asciidoc[]
+
+'''
+=== Configuration : Scanner votre réseau
+include::partie_2.asciidoc[]
+
+'''
+=== Créer un nouveau mode Couleur
+include::partie_3.asciidoc[]
+
+'''
+=== FAQ
+include::faq.asciidoc[]

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+    <id>tesla</id>
+    <name>Tesla</name>
+    <description>Plugin permettant de contrôler les voitures Tesla</description>
+    <icon>fa fa-keyboard-o</icon>
+    <licence>AGPL</licence>
+    <author>Rocket13011</author>
+    <installation>Aucune</installation>
+    <require>2.3</require>
+    <category>devicecommunication</category>
+</info>
+
