@@ -38,7 +38,7 @@ if (!isConnect()) {
     <div class="form-group">
         <label class="col-lg-2 control-label">{{Synchroniser}}</label>
         <div class="col-lg-2">
-        <a class="btn btn-warning" id="bt_syncWithTesla"><i class='fa fa-refresh'></i> {{Synchroniser de mes voitures}}</a>
+        <a class="btn btn-warning" id="bt_syncWithTesla"><i class='fa fa-refresh'></i> {{Synchroniser mes voitures}}</a>
         </div>
     </div>
 </fieldset>
