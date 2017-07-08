@@ -29,12 +29,6 @@ try {
 		tesla::scantesla();
 		ajax::success();
 	}
-	
-	if (init('action') == 'savecolor'){
-		$cmd = cmd::byEqLogicIdAndLogicalId(init('id_eqLogic'),'create_light_color');
-		$execution = $cmd->execCmd();
-		ajax::success();
-	}
 
 
     throw new Exception(__('Aucune methode correspondante à : ', __FILE__) . init('action'));
