@@ -2,7 +2,7 @@
 if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
-$plugin = plugin::byId('lifx');
+$plugin = plugin::byId('tesla');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
@@ -29,7 +29,7 @@ foreach ($eqLogics as $eqLogic) {
       <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Configuration}}</center></span>
   </div>
 </div>
-<legend><i class="icon jeedom-lumiere-on"></i>  {{Mes Lifx}}</legend>
+<legend><i class="icon jeedom-lumiere-on"></i>  {{Mes Tesla}}</legend>
 <div class="eqLogicThumbnailContainer">
 	<div class="cursor eqLogicAction" id="bt_scan" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
            <center>
@@ -41,7 +41,7 @@ foreach ($eqLogics as $eqLogic) {
 foreach ($eqLogics as $eqLogic) {
 	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
 	echo "<center>";
-	echo '<img src="plugins/lifx/doc/images/'.$eqLogic->getConfiguration('product').'.png" height="105" width="95" />';
+	echo '<img src="plugins/tesla/doc/images/'.$eqLogic->getConfiguration('product').'.png" height="105" width="95" />';
 	echo "</center>";
 	echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
 	echo '</div>';
@@ -57,7 +57,7 @@ foreach ($eqLogics as $eqLogic) {
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Equipement}}</a></li>
         <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
-        <li role="presentation"><a id="color_lifx_tab" href="#colortab" aria-controls="color" role="tab" data-toggle="tab"><i class="fa jeedom2-idea13"></i> {{Couleurs}}</a></li>
+        <li role="presentation"><a id="color_tesla_tab" href="#colortab" aria-controls="color" role="tab" data-toggle="tab"><i class="fa jeedom2-idea13"></i> {{Couleurs}}</a></li>
     </ul>
 
     <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
@@ -158,5 +158,5 @@ foreach (object::all() as $object) {
 </div>
 </div>
 
-<?php include_file('desktop', 'lifx', 'js', 'lifx');?>
+<?php include_file('desktop', 'tesla', 'js', 'tesla');?>
 <?php include_file('core', 'plugin.template', 'js');?>
