@@ -50,11 +50,6 @@ class tesla extends eqLogic {
 	
 	/*** ****/
 	
-	
-	public static function scantesla(){
-		//SCANNER TESLA
-	}
-	
 	public static function modele($product){
 		//PRODUCT $produit
 	}
