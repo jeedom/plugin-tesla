@@ -42,11 +42,11 @@ class tesla extends eqLogic {
 
 		$response = curl_exec($ch);
 		curl_close($ch);
-	};
+	}
 	
 	public static function scantesla(){
 		tesla::recupToken()
-	};
+	}
 	
 	/*** ****/
 	
