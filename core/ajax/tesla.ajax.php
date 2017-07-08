@@ -25,7 +25,7 @@ try {
     }
 
 
-	if (init('action') == 'scantesla') {
+	if (init('action') == 'syncWithTesla') {
 		tesla::scantesla();
 		ajax::success();
 	}
