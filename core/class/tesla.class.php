@@ -21,6 +21,30 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class tesla extends eqLogic {
     /*     * *************************Attributs****************************** */
+	/************** API TESLA **************/
+	public static function recupToken(){
+		// ************* DEBUT DES VARIABLES
+		$grant_type="password"; // information lié à l'appel API, NE PAS MODIFIER
+		$client_id="81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384"; // information lié à l'appel API, NE PAS MODIFIER
+		$client_secret="c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"; // information lié à l'appel API, NE PAS MODIFIER
+		$email = config::byKey('username', 'tesla');
+		$password = config::byKey('password', 'tesla');
+
+		$my_file=fopen("/var/www/html/plugins/tesla/data/Tesla_Token.json", 'w');
+		$data_url = "grant_type=$grant_type&client_id=$client_id&client_secret=$client_secret&email=$email&password=$password";
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://owner-api.teslamotors.com/oauth/token");
+		curl_setopt($ch, CURLOPT_HEADER, FALSE);
+		curl_setopt($ch, CURLOPT_POST, TRUE);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_url);
+		curl_setopt($ch, CURLOPT_FILE, $my_file);
+
+		$response = curl_exec($ch);
+		curl_close($ch);
+	};
+	
+	/*** ****/
 	public static function addDevice($mac,$ip,$name,$vendor,$product,$version,$port,$group) {
 		log::add('tesla', 'info', 'Produit déterminé via ID : '.tesla::modele($product), 'config');
 		$eqLogic = new eqLogic();
