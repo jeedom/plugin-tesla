@@ -45,7 +45,7 @@ class tesla extends eqLogic {
 	}
 	
 	public static function scantesla(){
-		tesla::recupToken()
+		tesla::recupToken();
 	}
 	
 	/*** ****/
