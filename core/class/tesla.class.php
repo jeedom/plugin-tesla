@@ -21,16 +21,19 @@ require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
 class tesla extends eqLogic {
     /*     * *************************Attributs****************************** */
+   public static function lienToken(){
+    	return  dirname(__FILE__) . '/../../data/Tesla_Token.json';
+   }
 	/************** API TESLA **************/
 	public static function recupToken(){
 		// ************* DEBUT DES VARIABLES
 		$grant_type="password"; // information lié à l'appel API, NE PAS MODIFIER
-		$client_id="e4a9949fcfa04068f59abb5a658f2bac0a3428e4652315490b659d5ab3f35a9e"; // information lié à l'appel API, NE PAS MODIFIER
-		$client_secret="c75f14bbadc8bee3a7594412c31416f8300256d7668ea7e6e7f06727bfb9d220"; // information lié à l'appel API, NE PAS MODIFIER
+		$client_id="81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384"; // information lié à l'appel API, NE PAS MODIFIER
+		$client_secret="c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"; // information lié à l'appel API, NE PAS MODIFIER
 		$email = config::byKey('username', 'tesla');
 		$password = config::byKey('password', 'tesla');
 
-		$my_file=fopen("/var/www/html/plugins/tesla/data/Tesla_Token.json", 'w');
+		$my_file=fopen(tesla::lienToken(), 'w');
 		$data_url = "grant_type=$grant_type&client_id=$client_id&client_secret=$client_secret&email=$email&password=$password";
 
 		$ch = curl_init();
@@ -39,13 +42,81 @@ class tesla extends eqLogic {
 		curl_setopt($ch, CURLOPT_POST, TRUE);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_url);
 		curl_setopt($ch, CURLOPT_FILE, $my_file);
-
 		$response = curl_exec($ch);
 		curl_close($ch);
 	}
+  
+    public static function readToken(){
+        $linkToken = tesla::lienToken();
+        $token_json = fopen($linkToken, "r");
+      	$contents = fread($token_json, filesize($linkToken));
+		fclose($token_json);
+        $token_json = json_decode($contents,true);
+        $expire = ($token_json['created_at'] + $token_json['expires_in']);
+        if(time() < $expire){
+        	log::add('tesla', 'debug', 'fichier token : '.$contents);
+        	log::add('tesla', 'debug', 'access token : '.$token_json['access_token']);
+      		return $token_json['access_token'];
+        }else{
+        	log::add('tesla', 'debug', 'fichier token : '.$contents);
+          	log::add('tesla', 'error', 'TOKEN EXPIRER');
+          return 'nok';
+        }
+    }
+  
+  	public static function discoveryVehicule(){
+         log::add('tesla', 'debug', 'Discovery Vehicule');
+      	 $token = tesla::readToken();
+      	if($token == 'nok'){
+          tesla::recupToken();
+          $token = tesla::readToken();
+        }
+          $ch = curl_init();
+           curl_setopt($ch, CURLOPT_URL, "https://owner-api.teslamotors.com/api/1/vehicles");
+           curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+           curl_setopt($ch, CURLOPT_HEADER, FALSE);
+           curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
+          //execute la requête
+          $response = curl_exec($ch);
+          curl_close($ch);
+          log::add('tesla', 'debug', 'Voiture : '.$response);
+          return $response;
+    }
 	
+  	public static function addVehicule($Tesla_Vehicles){
+        log::add('tesla', 'debug', 'validation Vehicule');
+      	$Tesla_Vehicles = json_decode($Tesla_Vehicles,true);
+      	$Tesla_Vehicles = $Tesla_Vehicles['response'];
+      	foreach ($Tesla_Vehicles as &$Tesla_Vehicle) {
+    		log::add('tesla', 'debug', 'id vehicles : '.$Tesla_Vehicle['id']);
+          	$eqExiste = eqlogic::byLogicalId($Tesla_Vehicle['id'], 'tesla');
+          	if(!is_object($eqExiste)){
+            	$tesla = new eqLogic;
+                $tesla->setEqType_name('tesla');
+                $tesla->setName($Tesla_Vehicle['display_name']);
+                $tesla->setConfiguration('vehicle_id',$Tesla_Vehicle['vehicle_id']);
+                $tesla->setConfiguration('state',$Tesla_Vehicle['state']);
+              	$tesla->setConfiguration('vin',$Tesla_Vehicle['vin']);
+                $tesla->setConfiguration('option_codes',$Tesla_Vehicle['option_codes']);
+                $tesla->setConfiguration('color',$Tesla_Vehicle['color']);
+                $tesla->setConfiguration('in_service',$Tesla_Vehicle['in_service']);
+                $tesla->setConfiguration('id_s',$Tesla_Vehicle['id_s']);
+                $tesla->setConfiguration('remote_start_enabled',$Tesla_Vehicle['remote_start_enabled']);
+                $tesla->setConfiguration('calendar_enabled',$Tesla_Vehicle['calendar_enabled']);
+                $tesla->setConfiguration('notifications_enabled',$Tesla_Vehicle['notifications_enabled']);
+                $tesla->setConfiguration('backseat_token',$Tesla_Vehicle['backseat_token']);
+                $tesla->setConfiguration('backseat_token_updated_at',$Tesla_Vehicle['backseat_token_updated_at']);
+                $tesla->setIsEnable(1);
+                $tesla->setLogicalId($Tesla_Vehicle['id']);
+                $tesla->save();  
+            }
+	  	}
+        
+    }
+  
 	public static function scantesla(){
-		tesla::recupToken();
+      	$discoveryVehicule = tesla::discoveryVehicule();
+        tesla::addVehicule($discoveryVehicule);
 	}
 	
 	/*** ****/
@@ -146,3 +217,4 @@ class teslaCmd extends cmd {
 }
 
 ?>
+
