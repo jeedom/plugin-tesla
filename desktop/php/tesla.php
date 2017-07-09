@@ -116,7 +116,7 @@ foreach (object::all() as $object) {
            <label class="col-lg-3 control-label">{{Modèle}}</label>
            <div class="col-sm-6">
               <span class="label label-info" style="font-size:1em;cursor: default;">
-                <span class="eqLogicAttr" style="font-size:1em;cursor: default;" data-l1key="configuration" data-l2key="modele"></span>
+                <span class="eqLogicAttr" style="font-size:1em;cursor: default;" data-l1key="configuration" data-l2key="model"></span>
                 <span class="eqLogicAttr hidden" style="font-size:1em;cursor: default;" data-l1key="configuration" data-l2key="product"></span>
             </span>
         </div>
