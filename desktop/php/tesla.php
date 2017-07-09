@@ -50,14 +50,12 @@ foreach ($eqLogics as $eqLogic) {
 </div>
 </div>
 <div class="col-lg-10 col-md-9 col-sm-8 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
-    <a class="btn btn-info pull-right" id="new_Color"><i class="fa jeedom2-idea13"></i> {{Nouvelle couleur}}</a>
     <a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
     <a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fa fa-minus-circle"></i> {{Supprimer}}</a>
 
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Equipement}}</a></li>
         <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
-        <li role="presentation"><a id="color_tesla_tab" href="#colortab" aria-controls="color" role="tab" data-toggle="tab"><i class="fa jeedom2-idea13"></i> {{Couleurs}}</a></li>
     </ul>
 
     <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
@@ -68,10 +66,10 @@ foreach ($eqLogics as $eqLogic) {
                 <fieldset>
                     <legend><i class="fa fa-arrow-circle-left eqLogicAction cursor" data-action="returnToThumbnailDisplay"></i> {{Général}}<i class='fa fa-cogs eqLogicAction pull-right cursor expertModeVisible' data-action='configure'></i></legend>
                     <div class="form-group">
-                        <label class="col-lg-3 control-label">{{Nom de l'équipement}}</label>
+                        <label class="col-lg-3 control-label">{{Nom de la Tesla}}</label>
                         <div class="col-lg-4">
                             <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
-                            <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}"/>
+                            <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de la Tesla}}"/>
                         </div>
 
                     </div>
@@ -97,15 +95,21 @@ foreach (object::all() as $object) {
                 </div>
                 <legend><i class="fa fa-info"></i>  {{Informations}}</legend>
                 <div class="form-group">
-                    <label class="col-lg-3 control-label">{{Adresse Mac}}</label>
+                    <label class="col-lg-3 control-label">{{ID du vehicule}}</label>
                     <div class="col-sm-6">
-                      <span class="eqLogicAttr label label-info" style="font-size:1em;cursor: default;" data-l1key="configuration" data-l2key="mac"></span>
+                      <span class="eqLogicAttr label label-info" style="font-size:1em;cursor: default;" data-l1key="configuration" data-l2key="vehicle_id"></span>
                   </div>
               </div>
               <div class="form-group">
-                <label class="col-lg-3 control-label">{{Ip}}</label>
+                <label class="col-lg-3 control-label">{{VIN}}</label>
                 <div class="col-sm-6">
-                  <span class="eqLogicAttr label label-info" style="font-size:1em;cursor: default;" data-l1key="configuration" data-l2key="ip"></span>
+                  <span class="eqLogicAttr label label-info" style="font-size:1em;cursor: default;" data-l1key="configuration" data-l2key="vin"></span>
+              </div>
+          </div>
+          <div class="form-group">
+                <label class="col-lg-3 control-label">{{Statut}}</label>
+                <div class="col-sm-6">
+                  <span class="eqLogicAttr label label-info" style="font-size:1em;cursor: default;" data-l1key="configuration" data-l2key="state"></span>
               </div>
           </div>
           <div class="form-group">
@@ -141,22 +145,10 @@ foreach (object::all() as $object) {
 </table>
 
 </div>
-<div role="tabpanel" class="tab-pane" id="colortab">
- <table id="tablecolor_cmd" class="table table-bordered table-condensed">
-   <thead>
-    <tr>
-        <th>{{Nom}}</th><th>{{Options}}</th><th>{{Action}}</th>
-    </tr>
-</thead>
-<tbody>
-
-</tbody>
-</table>
-
-</div>
 </div>
 </div>
 </div>
 
 <?php include_file('desktop', 'tesla', 'js', 'tesla');?>
 <?php include_file('core', 'plugin.template', 'js');?>
+
