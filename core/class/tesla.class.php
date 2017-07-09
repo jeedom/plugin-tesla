@@ -106,6 +106,7 @@ class tesla extends eqLogic {
                 $tesla->setConfiguration('notifications_enabled',$Tesla_Vehicle['notifications_enabled']);
                 $tesla->setConfiguration('backseat_token',$Tesla_Vehicle['backseat_token']);
                 $tesla->setConfiguration('backseat_token_updated_at',$Tesla_Vehicle['backseat_token_updated_at']);
+              	$tesla->setConfiguration('model',tesla::modele($Tesla_Vehicle['option_codes']));
                 $tesla->setIsEnable(1);
                 $tesla->setLogicalId($Tesla_Vehicle['id']);
                 $tesla->save();  
@@ -122,7 +123,12 @@ class tesla extends eqLogic {
 	/*** ****/
 	
 	public static function modele($product){
-		//PRODUCT $produit
+		$model = substr($product, 0, 4);
+        if($model == 'MDLX'){
+        	return 'X';  
+        }else{
+         	return 'S'; 
+        }
 	}
 
     /*     * ***********************Methode static*************************** */
