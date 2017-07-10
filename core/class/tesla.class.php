@@ -55,7 +55,6 @@ class tesla extends eqLogic {
         $expire = ($token_json['created_at'] + $token_json['expires_in']);
         if(time() < $expire){
         	log::add('tesla', 'debug', 'fichier token : '.$contents);
-        	log::add('tesla', 'debug', 'access token : '.$token_json['access_token']);
       		return $token_json['access_token'];
         }else{
         	log::add('tesla', 'debug', 'fichier token : '.$contents);
@@ -91,6 +90,7 @@ class tesla extends eqLogic {
     		log::add('tesla', 'debug', 'id vehicles : '.$Tesla_Vehicle['id']);
           	$eqExiste = eqlogic::byLogicalId($Tesla_Vehicle['id'], 'tesla');
           	if(!is_object($eqExiste)){
+              	log::add('tesla', 'info','Création du vehicule '.$Tesla_Vehicle['display_name']);
             	$tesla = new eqLogic;
                 $tesla->setEqType_name('tesla');
                 $tesla->setName($Tesla_Vehicle['display_name']);
@@ -115,14 +115,10 @@ class tesla extends eqLogic {
     }
   
 	public static function scantesla(){
+      	log::add('tesla', 'info','Lancement du scan des vehicules Tesla');
       	$discoveryVehicule = tesla::discoveryVehicule();
         tesla::addVehicule($discoveryVehicule);
-      	$vehicles = eqlogic::byType('tesla');
-      	foreach ($vehicles as &$vehicle) {
-          	  $vehicle_id = $vehicle->getConfiguration('id_s');
-              log::add('tesla', 'debug', 'recup State Vehicule : '.$vehicle_id);
-          	  tesla::charge_state($vehicle_id);
-        }
+      	tesla::maj_tesla();
 	}
 	/*** ****/
 	
@@ -135,24 +131,64 @@ class tesla extends eqLogic {
         }
 	}
   
+  /***** MAJ TESLA *****/
+  public static function maj_tesla(){
+    	$vehicles = eqlogic::byType('tesla');
+      	foreach ($vehicles as &$vehicle) {
+          	  log::add('tesla', 'info','Mise à jours des commandes du vehicule '.$vehicle->getConfiguration('display_name'));
+          	  $vehicle_id = $vehicle->getConfiguration('id_s');
+              log::add('tesla', 'debug', 'recup State Vehicule : '.$vehicle_id);
+          	  $vehicule_state = tesla::recup_json($vehicle_id,'vehicle_state');
+              tesla::read_json($vehicule_state,$vehicle->getId());
+              $charge_state = tesla::recup_json($vehicle_id,'charge_state');
+          	  tesla::read_json($charge_state,$vehicle->getId());
+              $drive_state = tesla::recup_json($vehicle_id,'drive_state');
+          	  tesla::read_json($drive_state,$vehicle->getId());
+              $climate_state = tesla::recup_json($vehicle_id,'climate_state');
+          	  tesla::read_json($climate_state,$vehicle->getId());
+        }
+  }
+  
   /*********** API TESLA UPDATE ****************/
-    public static function charge_state($vehicle){
+    public static function recup_json($vehicle,$type){
+        $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle."/data_request/$type";
     	$token = tesla::readToken();
     	if($token == 'nok'){
         	$reponse = 'nok';
           	log::add('tesla', 'debug', 'charge_state : '.$response);
         }else{
           $ch = curl_init();
-          curl_setopt($ch, CURLOPT_URL, "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle."/data_request/charge_state");
+          curl_setopt($ch, CURLOPT_URL, $url);
           curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
           curl_setopt($ch, CURLOPT_HEADER, FALSE);
           curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
           $response = curl_exec($ch);
           curl_close($ch);
-          log::add('tesla', 'debug', 'charge_state : '.$response);
+          log::add('tesla', 'debug', $type.' : '.$response);
         }
-    	return $reponse;
+    	return $response;
   	}
+  
+  	public static function read_json($json,$eqlogicId){
+      $array_json = json_decode($json,true);
+      if(isset($array_json['error'])){
+      		 log::add('tesla', 'error',' ERROR lecture JSON : '.$array_json['error']);
+      }else{
+       		$data = $array_json['response'];
+        	$keys = array_keys($data);
+        	foreach ($keys as &$key) {
+              	$cmd = cmd::byEqLogicIdAndLogicalId($eqlogicId,$key);
+              	log::add('tesla', 'debug',$key.' => '.$data[$key]);
+              	if(is_object($cmd)){
+                	$value_cmd = $cmd->execCmd();
+                  	if($value_cmd !== $data[$key]){
+                    	$cmd->event($data[$key]);
+                      	log::add('tesla', 'debug','different enregistrement de '.$key);
+                    }
+                }
+            }
+      }
+    }
 
     /*     * ***********************Methode static*************************** */
 
@@ -229,285 +265,6 @@ class tesla extends eqLogic {
 		$cmd->setDisplay('generic_type', 'LIGHT_STATE');
 		$cmd->save();
 		$luminosity_id = $cmd->getId();
-	    $cmd = $this->getCmd(null, 'inside_temp');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('inside_temp');
-      $cmd->setName(__('Température intérieure', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(1);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(1);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'outside_temp');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('outside_temp');
-      $cmd->setName(__('outside_temp', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(1);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(2);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'driver_temp_setting');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('driver_temp_setting');
-      $cmd->setName(__('driver_temp_setting', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(1);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(3);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'passenger_temp_setting');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('passenger_temp_setting');
-      $cmd->setName(__('passenger_temp_setting', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(1);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(4);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'left_temp_direction');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('left_temp_direction');
-      $cmd->setName(__('left_temp_direction', __FILE__));
-      $cmd->setIsVisible(0);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('string');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(5);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'right_temp_direction');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('right_temp_direction');
-      $cmd->setName(__('right_temp_direction', __FILE__));
-      $cmd->setIsVisible(0);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('string');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(6);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'is_auto_conditioning_on');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('is_auto_conditioning_on');
-      $cmd->setName(__('is_auto_conditioning_on', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(1);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('binary');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(7);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'is_front_defroster_on');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('is_front_defroster_on');
-      $cmd->setName(__('is_front_defroster_on', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('binary');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(8);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'is_rear_defroster_on');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('is_rear_defroster_on');
-      $cmd->setName(__('is_rear_defroster_on', __FILE__));
-      $cmd->setIsVisible(0);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('binary');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(9);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'fan_status');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('fan_status');
-      $cmd->setName(__('fan_status', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(1);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(10);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'is_climate_on');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('is_climate_on');
-      $cmd->setName(__('is_climate_on', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('binary');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(11);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'min_avail_temp');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('min_avail_temp');
-      $cmd->setName(__('min_avail_temp', __FILE__));
-      $cmd->setIsVisible(0);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(12);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'max_avail_temp');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('max_avail_temp');
-      $cmd->setName(__('max_avail_temp', __FILE__));
-      $cmd->setIsVisible(0);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(13);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'seat_heater_left');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('seat_heater_left');
-      $cmd->setName(__('seat_heater_left', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(14);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'seat_heater_right');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('seat_heater_right');
-      $cmd->setName(__('seat_heater_right', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(15);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'seat_heater_rear_left');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('seat_heater_rear_left');
-      $cmd->setName(__('seat_heater_rear_left', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(16);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'seat_heater_rear_right');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('seat_heater_rear_right');
-      $cmd->setName(__('seat_heater_rear_right', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(17);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'seat_heater_rear_center');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('seat_heater_rear_center');
-      $cmd->setName(__('seat_heater_rear_center', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(18);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'seat_heater_rear_right_back');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('seat_heater_rear_right_back');
-      $cmd->setName(__('seat_heater_rear_right_back', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(19);
-      $cmd->save();
-
-  $cmd = $this->getCmd(null, 'seat_heater_rear_left_back');
-     if (!is_object($cmd)) {
-      $cmd = new teslaCmd();
-      $cmd->setLogicalId('seat_heater_rear_left_back');
-      $cmd->setName(__('seat_heater_rear_left_back', __FILE__));
-      $cmd->setIsVisible(1);
-       $cmd->setIsHistorized(0);
-     }
-      $cmd->setType('info');
-      $cmd->setSubType('numeric');
-      $cmd->setEqLogic_id($this->getId());
-      $cmd->setOrder(20);
-      $cmd->save();
     }
 
     /*
@@ -540,4 +297,5 @@ class teslaCmd extends cmd {
 }
 
 ?>
+
 
