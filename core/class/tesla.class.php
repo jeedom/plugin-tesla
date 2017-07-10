@@ -109,27 +109,50 @@ class tesla extends eqLogic {
               	$tesla->setConfiguration('model',tesla::modele($Tesla_Vehicle['option_codes']));
                 $tesla->setIsEnable(1);
                 $tesla->setLogicalId($Tesla_Vehicle['id']);
-                $tesla->save();  
+                $tesla->save();
             }
-	  	}
-        
+	  	}  
     }
   
 	public static function scantesla(){
       	$discoveryVehicule = tesla::discoveryVehicule();
         tesla::addVehicule($discoveryVehicule);
+      	$vehicles = eqlogic::byType('tesla');
+      	foreach ($vehicles as &$vehicle) {
+          	  $vehicle_id = $vehicle->getLogicalId();
+              log::add('tesla', 'debug', 'recup State Vehicule : '.$vehicle_id);
+          	  tesla::charge_state($vehicle_id);
+        }
 	}
-	
 	/*** ****/
 	
-	public static function modele($product){
-		$model = substr($product, 0, 4);
+	public static function modele($option_codes){
+		$model = substr($option_codes, 0, 4);
         if($model == 'MDLX'){
         	return 'X';  
         }else{
          	return 'S'; 
         }
 	}
+  
+  /*********** API TESLA UPDATE ****************/
+    public static function charge_state($vehicle){
+    	$token = tesla::readToken();
+    	if($token == 'nok'){
+        	$reponse = 'nok';
+          	log::add('tesla', 'debug', 'charge_state : '.$response);
+        }else{
+          $ch = curl_init();
+          curl_setopt($ch, CURLOPT_URL, "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle."/data_request/charge_state");
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+          curl_setopt($ch, CURLOPT_HEADER, FALSE);
+          curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
+          $response = curl_exec($ch);
+          curl_close($ch);
+          log::add('tesla', 'debug', 'charge_state : '.$response);
+        }
+    	return $reponse;
+  	}
 
     /*     * ***********************Methode static*************************** */
 
@@ -190,7 +213,22 @@ class tesla extends eqLogic {
     }
     */
     function crea_cmd() {
-	    
+	    	$cmd = $this->getCmd(null, 'luminosity_state');
+			if (!is_object($cmd)) {
+				$cmd = new teslaCmd();
+				$cmd->setLogicalId('luminosity_state');
+				$cmd->setName(__('Etat Luminosité', __FILE__));
+				$cmd->setIsVisible(0);
+			}
+		$cmd->setType('info');
+		$cmd->setSubType('numeric');
+		$cmd->setEqLogic_id($this->getId());
+		$cmd->setOrder(1);
+		$cmd->setConfiguration('minValue', '0');
+		$cmd->setConfiguration('maxValue', '100');
+		$cmd->setDisplay('generic_type', 'LIGHT_STATE');
+		$cmd->save();
+		$luminosity_id = $cmd->getId();
     }
 
     /*
