@@ -88,7 +88,7 @@ class tesla extends eqLogic {
       	$Tesla_Vehicles = $Tesla_Vehicles['response'];
       	foreach ($Tesla_Vehicles as &$Tesla_Vehicle) {
     		log::add('tesla', 'debug', 'id vehicles : '.$Tesla_Vehicle['id']);
-          	$eqExiste = eqlogic::byLogicalId($Tesla_Vehicle['id'], 'tesla');
+          	$eqExiste = eqlogic::byLogicalId($Tesla_Vehicle['vehicle_id'], 'tesla');
           	if(!is_object($eqExiste)){
               	log::add('tesla', 'info','Création du vehicule '.$Tesla_Vehicle['display_name']);
             	$tesla = new eqLogic;
