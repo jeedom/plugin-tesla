@@ -75,9 +75,9 @@ $("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder:
     }
 }
 
-$('.eqLogicAttr[data-l1key=configuration][data-l2key=product]').on('change', function () {
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=model]').on('change', function () {
 	if($(this).value() != '' && $(this).value() != null){
-    	$('#img_Model').attr("src", 'plugins/tesla/doc/images/'+$(this).value()+'.png');
+    	$('#img_Model').attr("src", 'plugins/tesla/doc/images/model_'+$(this).value()+'/back_tesla_model_'+$(this).value()+'.jpg');
 	}
 });
 
@@ -136,4 +136,5 @@ $('#bt_scan').on('click', function () {
 }
 });
 });
+
 
