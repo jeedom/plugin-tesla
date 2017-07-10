@@ -1,4 +1,3 @@
-
 /* This file is part of Jeedom.
  *
  * Jeedom is free software: you can redistribute it and/or modify
@@ -118,7 +117,7 @@ $('#bt_scan').on('click', function () {
             type: "POST", // methode de transmission des données au fichier php
             url: "plugins/tesla/core/ajax/tesla.ajax.php", // url du fichier php
             data: {
-            	action: "scantesla",
+            	action: "syncWithTesla",
             },
             dataType: 'json',
             error: function (request, status, error) {
@@ -137,3 +136,4 @@ $('#bt_scan').on('click', function () {
 }
 });
 });
+
