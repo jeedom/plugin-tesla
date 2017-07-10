@@ -108,7 +108,7 @@ class tesla extends eqLogic {
                 $tesla->setConfiguration('backseat_token_updated_at',$Tesla_Vehicle['backseat_token_updated_at']);
               	$tesla->setConfiguration('model',tesla::modele($Tesla_Vehicle['option_codes']));
                 $tesla->setIsEnable(1);
-                $tesla->setLogicalId($Tesla_Vehicle['id']);
+                $tesla->setLogicalId($Tesla_Vehicle['vehicle_id']);
                 $tesla->save();
             }
 	  	}  
@@ -119,7 +119,7 @@ class tesla extends eqLogic {
         tesla::addVehicule($discoveryVehicule);
       	$vehicles = eqlogic::byType('tesla');
       	foreach ($vehicles as &$vehicle) {
-          	  $vehicle_id = $vehicle->getLogicalId();
+          	  $vehicle_id = $vehicle->getConfiguration('id_s');
               log::add('tesla', 'debug', 'recup State Vehicule : '.$vehicle_id);
           	  tesla::charge_state($vehicle_id);
         }
