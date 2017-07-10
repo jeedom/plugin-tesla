@@ -126,7 +126,9 @@ foreach (object::all() as $object) {
 </div>
 <div class="col-sm-6">
   <center>
-    <img id="img_Model" style="height:400px;" />
+    <img id="img_Model" style="height:400px; left:0; position:absolute;" />
+    <img id="color_Model" style="height:400px; left:0; position:absolute;" />
+    <img id="wheel_Model" style="height:400px; left:0; position:absolute;" />
 </center>
 </div>
 </div>
@@ -151,5 +153,6 @@ foreach (object::all() as $object) {
 
 <?php include_file('desktop', 'tesla', 'js', 'tesla');?>
 <?php include_file('core', 'plugin.template', 'js');?>
+
 
 
