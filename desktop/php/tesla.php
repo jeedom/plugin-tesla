@@ -29,7 +29,7 @@ foreach ($eqLogics as $eqLogic) {
       <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676"><center>{{Configuration}}</center></span>
   </div>
 </div>
-<legend><i class="icon jeedom-lumiere-on"></i>  {{Mes Tesla}}</legend>
+<legend><i class="icon transport-car95"></i>  {{Mes Tesla}}</legend>
 <div class="eqLogicThumbnailContainer">
 	<div class="cursor eqLogicAction" id="bt_scan" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
            <center>
@@ -41,7 +41,7 @@ foreach ($eqLogics as $eqLogic) {
 foreach ($eqLogics as $eqLogic) {
 	echo '<div class="eqLogicDisplayCard cursor" data-eqLogic_id="' . $eqLogic->getId() . '" style="background-color : #ffffff; height : 200px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
 	echo "<center>";
-	echo '<img src="plugins/tesla/doc/images/'.$eqLogic->getConfiguration('product').'.png" height="105" width="95" />';
+	echo '<img src="plugins/tesla/doc/images/'.$eqLogic->getConfiguration('model').'.png" height="105" width="95" />';
 	echo "</center>";
 	echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;"><center>' . $eqLogic->getHumanName(true, true) . '</center></span>';
 	echo '</div>';
@@ -151,4 +151,5 @@ foreach (object::all() as $object) {
 
 <?php include_file('desktop', 'tesla', 'js', 'tesla');?>
 <?php include_file('core', 'plugin.template', 'js');?>
+
 
