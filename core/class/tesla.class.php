@@ -252,6 +252,7 @@ class tesla extends eqLogic {
 	  curl_setopt($ch, CURLOPT_HEADER, FALSE);
 	  curl_setopt($ch, CURLOPT_POST, TRUE);
 	  if($hard !== null){
+	  	  log::add('tesla', 'debug', 'Params :'.$command.' => '.$hard);
 		  curl_setopt($ch, CURLOPT_POSTFIELDS,$hard);
 	  }
           curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
@@ -2123,5 +2124,3 @@ class teslaCmd extends cmd {
 }
 
 ?>
-
-
