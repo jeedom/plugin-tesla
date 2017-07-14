@@ -2055,7 +2055,7 @@ class teslaCmd extends cmd {
 		$eqLogic = $this->getEqLogic_id();
 		log::add('tesla', 'debug', 'eqlogic :'.$eqLogic);
 		$eqLogic_object = eqLogic::byId($eqLogic);
-		$vehicle_id = $eqLogic_object->getConfiguration('vehicle_id');
+		$vehicle_id = $eqLogic_object->getConfiguration('id_s');
 		log::add('tesla', 'debug', 'cmd demander : '.$this->getLogicalId().' Pour le vehicule > '.$vehicle_id);
 		if($this->getLogicalId() == 'wakeup'){
 			tesla::wakeupTesla($vehicle_id);
