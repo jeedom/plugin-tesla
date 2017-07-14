@@ -214,6 +214,44 @@ class tesla extends eqLogic {
             }
       }
     }
+    
+    public static function wakeupTesla($vehicle_id){
+	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle."/wake_up";
+    	$token = tesla::readToken();
+    	if($token == 'nok'){
+        	$reponse = 'nok';
+          	log::add('tesla', 'debug', 'Wake Up : '.$response);
+        }else{
+          $ch = curl_init();
+          curl_setopt($ch, CURLOPT_URL, $url);
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+          curl_setopt($ch, CURLOPT_HEADER, FALSE);
+          curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
+          $response = curl_exec($ch);
+          curl_close($ch);
+          log::add('tesla', 'debug',' response : '.$response);
+        }
+    	return $response;
+    }
+    
+    public static function commandSimpleTesla($vehicle_id,$command){
+	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle."/command/".$command;
+    	$token = tesla::readToken();
+    	if($token == 'nok'){
+        	$reponse = 'nok';
+          	log::add('tesla', 'debug', 'commande :'.$command.' => '.$response);
+        }else{
+          $ch = curl_init();
+          curl_setopt($ch, CURLOPT_URL, $url);
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+          curl_setopt($ch, CURLOPT_HEADER, FALSE);
+          curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
+          $response = curl_exec($ch);
+          curl_close($ch);
+          log::add('tesla', 'debug', 'response : '.$response);
+        }
+    	return $response;
+    }
 
     /*     * ***********************Methode static*************************** */
 
@@ -222,7 +260,12 @@ class tesla extends eqLogic {
       public static function cron() {
 
       }
-     */
+      */
+      
+      public static function cron5() {
+		  tesla::maj_tesla();
+      }
+     
 
 
     /*
@@ -246,10 +289,9 @@ class tesla extends eqLogic {
     public function preInsert() {
         
     }
-
     public function postInsert() {
+    	
     }
-
     public function preSave() {
     }
 	*/
@@ -1799,7 +1841,191 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(403);
     $cmd->save();
-    }
+    
+    $cmd = $this->getCmd(null, 'wakeup');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('wakeup');
+    $cmd->setName(__('Réveiller la voiture', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(404);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'charge_port_door_open');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('charge_port_door_open');
+    $cmd->setName(__('Ouvrir la trappe de charge', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(405);
+    $cmd->save();
+    
+    $cmd = $this->getCmd(null, 'charge_port_door_open');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('charge_port_door_open');
+    $cmd->setName(__('Ouvrir la trappe de charge', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(405);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'charge_standard');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('charge_standard');
+    $cmd->setName(__('Activé la charge standard', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(406);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'charge_max_range');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('charge_max_range');
+    $cmd->setName(__('Activé la charge Maximal', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(407);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'charge_start');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('charge_start');
+    $cmd->setName(__('Démarrer la charge', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(408);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'charge_stop');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('charge_stop');
+    $cmd->setName(__('Arreter la charge', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(409);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'flash_lights');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('flash_lights');
+    $cmd->setName(__('Appel de phare', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(410);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'honk_horn');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('honk_horn');
+    $cmd->setName(__('Klaxonner', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(411);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'door_unlock');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('door_unlock');
+    $cmd->setName(__('Déverrouiller les portes', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(412);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'door_lock');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('door_lock');
+    $cmd->setName(__('Verrouiller les portes', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(413);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'auto_conditioning_start');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('auto_conditioning_start');
+    $cmd->setName(__('Lancer le HVAC', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(414);
+    $cmd->save();
+    
+    $cmd = $this->getCmd(null, 'auto_conditioning_stop');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('auto_conditioning_stop');
+    $cmd->setName(__('Arreter le HVAC', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(415);
+    $cmd->save();
+
+    $cmd = $this->getCmd(null, 'auto_conditioning_stop');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('auto_conditioning_stop');
+    $cmd->setName(__('Arreter le HVAC', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(416);
+    $cmd->save();
+}
+    
+    
 
     /*
      * Non obligatoire mais permet de modifier l'affichage du widget si vous en avez besoin
@@ -1812,24 +2038,21 @@ $cmd = $this->getCmd(null, 'gps_as_of');
 }
 
 class teslaCmd extends cmd {
-    /*     * *************************Attributs****************************** */
 
-
-    /*     * ***********************Methode static*************************** */
-
-
-    /*     * *********************Methode d'instance************************* */
-
-    /*
-     * Non obligatoire permet de demander de ne pas supprimer les commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
-      public function dontRemoveCmd() {
-      return true;
-      }
-     */
-
-    /*     * **********************Getteur Setteur*************************** */
+   public function execute($_options = array()){
+        if ($this->getType() != 'action') {
+			return;
+		}
+		$eqLogic = $this->getEqLogic();
+		$vehicle_id = $eqLogic->getConfiguration('vehicle_id');
+		if($this->getLogicalId == 'wakeup'){
+			tesla::wakeupTesla($vehicle_id);
+		}else{
+			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId);
+		}
+		
+	}
+	
 }
 
 ?>
-
-
