@@ -2032,7 +2032,8 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(416);
     $cmd->save();
-	    $cmd = $this->getCmd(null, 'sun_roof_control');
+    
+	$cmd = $this->getCmd(null, 'sun_roof_control');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
     $cmd->setLogicalId('sun_roof_control');
@@ -2041,10 +2042,12 @@ $cmd = $this->getCmd(null, 'gps_as_of');
    }
     $cmd->setType('action');
     $cmd->setSubType('slider');
+    $cmd->setConfiguration('maxValue', 1);
+    $cmd->setConfiguration('maxValue', 0);
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(417);
     $cmd->save();
-
+    
 $cmd = $this->getCmd(null, 'charge_port_door_close');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
@@ -2058,8 +2061,22 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
     $cmd->setOrder(418);
     $cmd->save();
     
-}
+    $cmd = $this->getCmd(null, 'set_charge_limit');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('set_charge_limit');
+    $cmd->setName(__('Limite Charge', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('slider');
+    $cmd->setConfiguration('maxValue',100);
+    $cmd->setConfiguration('minValue', 50);
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(419);
+    $cmd->save();
     
+    }
 
     /*
      * Non obligatoire mais permet de modifier l'affichage du widget si vous en avez besoin
@@ -2088,7 +2105,14 @@ class teslaCmd extends cmd {
 		if($this->getLogicalId() == 'wakeup'){
 			tesla::wakeupTesla($vehicle_id);
 		}else if($this->getLogicalId() == 'sun_roof_control'){
-			$cmdComplexe = 'state=move&percent='.$_options['slider'];
+			if($_options['slider'] == 1){
+				$cmdComplexe = 'state=vent';
+			}else{
+				$cmdComplexe = 'state=close';
+			}
+			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId(),$cmdComplexe);
+		}else if($this->getLogicalId() == 'set_charge_limit'){
+			$cmdComplexe = 'percent='.$_options['slider'];
 			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId(),$cmdComplexe);
 		}else{
 			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId());
