@@ -2045,6 +2045,18 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setOrder(417);
     $cmd->save();
 }
+$cmd = $this->getCmd(null, 'charge_port_door_close');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('charge_port_door_close');
+    $cmd->setName(__('Fermer la trappe de charge', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('other');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(418);
+    $cmd->save();
     
     
 
