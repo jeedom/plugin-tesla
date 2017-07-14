@@ -239,9 +239,6 @@ class tesla extends eqLogic {
     public static function commandSimpleTesla($vehicle_id,$command,$hard = null){
     	//tesla::wakeupTesla($vehicle_id);
 	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle_id."/command/".$command;
-	    if($hard !== null){
-		    $url = $url.'?'.$hard;
-	    }
     	log::add('tesla', 'debug', 'URL :'.$url);
     	$token = tesla::readToken();
     	if($token == 'nok'){
@@ -252,8 +249,11 @@ class tesla extends eqLogic {
           curl_setopt($ch, CURLOPT_URL, $url);
           curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
           curl_setopt($ch, CURLOPT_TIMEOUT,5000);
-		  curl_setopt($ch, CURLOPT_HEADER, FALSE);
-		  curl_setopt($ch, CURLOPT_POST, TRUE);
+	  curl_setopt($ch, CURLOPT_HEADER, FALSE);
+	  curl_setopt($ch, CURLOPT_POST, TRUE);
+	  if($hard !== null){
+		  curl_setopt($ch, CURLOPT_POSTFIELDS,$hard);
+	  }
           curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
           $response = curl_exec($ch);
           curl_close($ch);
