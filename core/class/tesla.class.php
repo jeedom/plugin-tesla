@@ -2033,22 +2033,7 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(416);
     $cmd->save();
-    
-	$cmd = $this->getCmd(null, 'sun_roof_control');
-   if (!is_object($cmd)) {
-    $cmd = new teslaCmd();
-    $cmd->setLogicalId('sun_roof_control');
-    $cmd->setName(__('Toit Ouvrant', __FILE__));
-    $cmd->setIsVisible(1);
-   }
-    $cmd->setType('action');
-    $cmd->setSubType('slider');
-    $cmd->setConfiguration('maxValue', 10);
-    $cmd->setConfiguration('maxValue', 0);
-    $cmd->setEqLogic_id($this->getId());
-    $cmd->setOrder(417);
-    $cmd->save();
-    
+
 $cmd = $this->getCmd(null, 'charge_port_door_close');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
@@ -2077,11 +2062,11 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
     $cmd->setOrder(419);
     $cmd->save();
     
-    $cmd = $this->getCmd(null, 'trunk_open');
+    $cmd = $this->getCmd(null, 'sun_roof_control_vent');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
-    $cmd->setLogicalId('trunk_open');
-    $cmd->setName(__('Ouvrir Coffre', __FILE__));
+    $cmd->setLogicalId('sun_roof_control_vent');
+    $cmd->setName(__('Toit Ouvrant Ouverture 15%', __FILE__));
     $cmd->setIsVisible(1);
    }
     $cmd->setType('action');
@@ -2090,11 +2075,11 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
     $cmd->setOrder(420);
     $cmd->save();
     
-    $cmd = $this->getCmd(null, 'trunk_close');
+    $cmd = $this->getCmd(null, 'sun_roof_control_close');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
-    $cmd->setLogicalId('trunk_close');
-    $cmd->setName(__('Fermer Coffre', __FILE__));
+    $cmd->setLogicalId('sun_roof_control_close');
+    $cmd->setName(__('Toit Ouvrant Fermer', __FILE__));
     $cmd->setIsVisible(1);
    }
     $cmd->setType('action');
@@ -2102,6 +2087,7 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(421);
     $cmd->save();
+    
     
     }
 
@@ -2131,26 +2117,18 @@ class teslaCmd extends cmd {
 		log::add('tesla', 'debug', 'cmd demander : '.$this->getLogicalId().' Pour le vehicule > '.$vehicle_id);
 		if($this->getLogicalId() == 'wakeup'){
 			tesla::wakeupTesla($vehicle_id);
-		}else if($this->getLogicalId() == 'sun_roof_control'){
-			if($_options['slider'] > 5){
-				$cmdComplexe = 'state=vent';
-			}else{
-				$cmdComplexe = 'state=close';
-			}
-			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId(),$cmdComplexe);
+		}else if($this->getLogicalId() == 'sun_roof_control_vent'){
+			$cmdComplexe = 'state=vent';
+			tesla::commandSimpleTesla($vehicle_id,'sun_roof_control',$cmdComplexe);
+		}else if($this->getLogicalId() == 'sun_roof_control_close'){
+			$cmdComplexe = 'state=close';
+			tesla::commandSimpleTesla($vehicle_id,'sun_roof_control',$cmdComplexe);
 		}else if($this->getLogicalId() == 'set_charge_limit'){
 			$cmdComplexe = 'percent='.$_options['slider'];
-			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId(),$cmdComplexe);
-		}else if($this->getLogicalId() == 'trunk_open'){
-			$cmdComplexe = 'which_trunk=rear';
-			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId(),$cmdComplexe);
-		}else if($this->getLogicalId() == 'trunk_close'){
-			$cmdComplexe = 'which_trunk=rear';
 			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId(),$cmdComplexe);
 		}else{
 			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId());
 		}
-		
 	}
 	
 }
