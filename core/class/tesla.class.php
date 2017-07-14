@@ -236,9 +236,12 @@ class tesla extends eqLogic {
     	return $response;
     }
     
-    public static function commandSimpleTesla($vehicle_id,$command){
+    public static function commandSimpleTesla($vehicle_id,$command,$hard = null){
     	//tesla::wakeupTesla($vehicle_id);
 	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle_id."/command/".$command;
+	    if($hard !== null){
+		    $url = $url.'?'.$hard;
+	    }
     	log::add('tesla', 'debug', 'URL :'.$url);
     	$token = tesla::readToken();
     	if($token == 'nok'){
@@ -2029,6 +2032,18 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(416);
     $cmd->save();
+	    $cmd = $this->getCmd(null, 'sun_roof_control');
+   if (!is_object($cmd)) {
+    $cmd = new teslaCmd();
+    $cmd->setLogicalId('sun_roof_control');
+    $cmd->setName(__('Toit Ouvrant', __FILE__));
+    $cmd->setIsVisible(1);
+   }
+    $cmd->setType('action');
+    $cmd->setSubType('slider');
+    $cmd->setEqLogic_id($this->getId());
+    $cmd->setOrder(417);
+    $cmd->save();
 }
     
     
@@ -2059,6 +2074,9 @@ class teslaCmd extends cmd {
 		log::add('tesla', 'debug', 'cmd demander : '.$this->getLogicalId().' Pour le vehicule > '.$vehicle_id);
 		if($this->getLogicalId() == 'wakeup'){
 			tesla::wakeupTesla($vehicle_id);
+		}else if($this->getLogicalId() == 'sun_roof_control'){
+			$cmdComplexe = 'state=move&percent='.$_options['slider'];
+			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId(),$cmdComplexe);
 		}else{
 			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId());
 		}
