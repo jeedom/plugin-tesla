@@ -127,9 +127,7 @@ foreach (object::all() as $object) {
 <div class="col-sm-6">
   <center>
     <img id="img_Model" style="height:400px; left:0; position:absolute;" />
-    <img id="color_Model" style="height:400px; left:0; position:absolute;" />
-    <img id="wheel_Model" style="height:400px; left:0; position:absolute;" />
-</center>
+  </center>
 </div>
 </div>
 

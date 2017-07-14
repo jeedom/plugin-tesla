@@ -24,6 +24,9 @@ class tesla extends eqLogic {
    public static function lienToken(){
     	return  dirname(__FILE__) . '/../../data/Tesla_Token.json';
    }
+   public static function imageTesla(){
+   		return dirname(__FILE__) . '/../../data';
+   }
 	/************** API TESLA **************/
 	public static function recupToken(){
 		// ************* DEBUT DES VARIABLES
@@ -111,7 +114,8 @@ class tesla extends eqLogic {
                 $tesla->setLogicalId($Tesla_Vehicle['vehicle_id']);
                 $tesla->save();
             }
-	  	}  
+          	tesla::photoTesla($Tesla_Vehicle['option_codes'],$Tesla_Vehicle['vehicle_id'],tesla::modele($Tesla_Vehicle['option_codes']));
+	  	}
     }
   
 	public static function scantesla(){
@@ -130,6 +134,27 @@ class tesla extends eqLogic {
          	return 'S'; 
         }
 	}
+    public static function photoTesla($options,$vehicle_id,$model){
+      	  if($model == 'X'){
+          	$url = "https://www.tesla.com/configurator/compositor/?model=mx&view=STUD_SIDE&size=1028&options=".$options."&bkba_opt=1";
+          }else if($model == 'S'){
+            $url = "https://www.tesla.com/configurator/compositor/?model=ms&view=STUD_SIDE&size=1028&options=".$options."&bkba_opt=1";
+          }
+      	   log::add('tesla', 'debug','Recup image : '.$url);
+      	   $my_file=fopen(tesla::imageTesla().'/'.$vehicle_id.'.png', 'w');
+      	   /*curl_setopt($ch, CURLOPT_URL, $url);
+      	   curl_setopt($ch, CURLOPT_FILE, $my_file);
+           //execute la requête
+           $response = curl_exec($ch);
+           curl_close($ch);*/
+      		$ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_FILE, $my_file);
+            $data = curl_exec($ch);
+            $curl_errno = curl_errno($ch);
+            $curl_error = curl_error($ch);
+            curl_close($ch);
+			fclose($fp);
+    }
   
   /***** MAJ TESLA *****/
   public static function maj_tesla(){
@@ -249,25 +274,7 @@ class tesla extends eqLogic {
     }
     */
     function crea_cmd() {
-	    	$cmd = $this->getCmd(null, 'luminosity_state');
-			if (!is_object($cmd)) {
-				$cmd = new teslaCmd();
-				$cmd->setLogicalId('luminosity_state');
-				$cmd->setName(__('Etat Luminosité', __FILE__));
-				$cmd->setIsVisible(0);
-			}
-		$cmd->setType('info');
-		$cmd->setSubType('numeric');
-		$cmd->setEqLogic_id($this->getId());
-		$cmd->setOrder(1);
-		$cmd->setConfiguration('minValue', '0');
-		$cmd->setConfiguration('maxValue', '100');
-		$cmd->setDisplay('generic_type', 'LIGHT_STATE');
-		$cmd->save();
-		$luminosity_id = $cmd->getId();
-	    $cmd = $this->getCmd(null, 'inside_temp');
-     
-	    $cmd = $this->getCmd(null, 'inside_temp');
+		$cmd = $this->getCmd(null, 'inside_temp');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
     $cmd->setLogicalId('inside_temp');
@@ -1792,7 +1799,6 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(403);
     $cmd->save();
-
     }
 
     /*
