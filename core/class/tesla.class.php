@@ -225,7 +225,9 @@ class tesla extends eqLogic {
           $ch = curl_init();
           curl_setopt($ch, CURLOPT_URL, $url);
           curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-          curl_setopt($ch, CURLOPT_HEADER, FALSE);
+          curl_setopt($ch, CURLOPT_TIMEOUT,5000);
+		  curl_setopt($ch, CURLOPT_HEADER, FALSE);
+		  curl_setopt($ch, CURLOPT_POST, TRUE);
           curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
           $response = curl_exec($ch);
           curl_close($ch);
@@ -235,6 +237,7 @@ class tesla extends eqLogic {
     }
     
     public static function commandSimpleTesla($vehicle_id,$command){
+    	//tesla::wakeupTesla($vehicle_id);
 	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle_id."/command/".$command;
     	log::add('tesla', 'debug', 'URL :'.$url);
     	$token = tesla::readToken();
@@ -245,6 +248,7 @@ class tesla extends eqLogic {
           $ch = curl_init();
           curl_setopt($ch, CURLOPT_URL, $url);
           curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+          curl_setopt($ch, CURLOPT_TIMEOUT,5000);
 		  curl_setopt($ch, CURLOPT_HEADER, FALSE);
 		  curl_setopt($ch, CURLOPT_POST, TRUE);
           curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
@@ -1321,7 +1325,7 @@ $cmd = $this->getCmd(null, 'df');
      $cmd->setIsHistorized(1);
    }
     $cmd->setType('info');
-    $cmd->setSubType('numeric');
+    $cmd->setSubType('binary');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(310);
     $cmd->save();
@@ -1335,7 +1339,7 @@ $cmd = $this->getCmd(null, 'dr');
      $cmd->setIsHistorized(1);
    }
     $cmd->setType('info');
-    $cmd->setSubType('numeric');
+    $cmd->setSubType('binary');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(311);
     $cmd->save();
@@ -1489,7 +1493,7 @@ $cmd = $this->getCmd(null, 'pf');
      $cmd->setIsHistorized(0);
    }
     $cmd->setType('info');
-    $cmd->setSubType('numeric');
+    $cmd->setSubType('binary');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(322);
     $cmd->save();
@@ -1503,7 +1507,7 @@ $cmd = $this->getCmd(null, 'pr');
      $cmd->setIsHistorized(0);
    }
     $cmd->setType('info');
-    $cmd->setSubType('numeric');
+    $cmd->setSubType('binary');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(323);
     $cmd->save();
