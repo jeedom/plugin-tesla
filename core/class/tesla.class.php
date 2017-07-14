@@ -2044,7 +2044,7 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setEqLogic_id($this->getId());
     $cmd->setOrder(417);
     $cmd->save();
-}
+
 $cmd = $this->getCmd(null, 'charge_port_door_close');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
