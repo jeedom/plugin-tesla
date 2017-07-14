@@ -216,7 +216,7 @@ class tesla extends eqLogic {
     }
     
     public static function wakeupTesla($vehicle_id){
-	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle."/wake_up";
+	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle_id."/wake_up";
     	$token = tesla::readToken();
     	if($token == 'nok'){
         	$reponse = 'nok';
@@ -235,7 +235,8 @@ class tesla extends eqLogic {
     }
     
     public static function commandSimpleTesla($vehicle_id,$command){
-	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle."/command/".$command;
+	    $url = "https://owner-api.teslamotors.com/api/1/vehicles/".$vehicle_id."/command/".$command;
+    	log::add('tesla', 'debug', 'URL :'.$url);
     	$token = tesla::readToken();
     	if($token == 'nok'){
         	$reponse = 'nok';
@@ -244,7 +245,8 @@ class tesla extends eqLogic {
           $ch = curl_init();
           curl_setopt($ch, CURLOPT_URL, $url);
           curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-          curl_setopt($ch, CURLOPT_HEADER, FALSE);
+		  curl_setopt($ch, CURLOPT_HEADER, FALSE);
+		  curl_setopt($ch, CURLOPT_POST, TRUE);
           curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer ".$token));
           $response = curl_exec($ch);
           curl_close($ch);
@@ -2040,15 +2042,21 @@ $cmd = $this->getCmd(null, 'gps_as_of');
 class teslaCmd extends cmd {
 
    public function execute($_options = array()){
+   		log::add('tesla', 'debug', 'cmd action demander');
         if ($this->getType() != 'action') {
+        	log::add('tesla', 'debug', 'cmd nest pas une action');
 			return;
 		}
-		$eqLogic = $this->getEqLogic();
-		$vehicle_id = $eqLogic->getConfiguration('vehicle_id');
-		if($this->getLogicalId == 'wakeup'){
+		log::add('tesla', 'debug', 'cmd est une action');
+		$eqLogic = $this->getEqLogic_id();
+		log::add('tesla', 'debug', 'eqlogic :'.$eqLogic);
+		$eqLogic_object = eqLogic::byId($eqLogic);
+		$vehicle_id = $eqLogic_object->getConfiguration('vehicle_id');
+		log::add('tesla', 'debug', 'cmd demander : '.$this->getLogicalId().' Pour le vehicule > '.$vehicle_id);
+		if($this->getLogicalId() == 'wakeup'){
 			tesla::wakeupTesla($vehicle_id);
 		}else{
-			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId);
+			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId());
 		}
 		
 	}
@@ -2056,3 +2064,5 @@ class teslaCmd extends cmd {
 }
 
 ?>
+
+
