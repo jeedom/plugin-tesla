@@ -2058,6 +2058,7 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
     $cmd->setOrder(418);
     $cmd->save();
     
+}
     
 
     /*
