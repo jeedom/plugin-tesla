@@ -2126,6 +2126,16 @@ class teslaCmd extends cmd {
 		}else if($this->getLogicalId() == 'set_charge_limit'){
 			$cmdComplexe = 'percent='.$_options['slider'];
 			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId(),$cmdComplexe);
+		}else if($this->getLogicalId() == 'driver_temp_driver'){
+			$cmdComplexe = 'driver_degC='.$_options['slider'];
+			$cmdPass = cmd::byLogicalId('passenger_temp_setting');
+			$cmdComplexe = $cmdComplexe.'&pass_degC='.$cmdPass->execCmd();
+			tesla::commandSimpleTesla($vehicle_id,'driver_temp',$cmdComplexe);
+		}else if($this->getLogicalId() == 'driver_temp_pass'){
+			$cmdComplexe = 'pass_degC='.$_options['slider'];
+			$cmdPass = cmd::byLogicalId('driver_temp_setting');
+			$cmdComplexe = $cmdComplexe.'&driver_degC='.$cmdPass->execCmd();
+			tesla::commandSimpleTesla($vehicle_id,'driver_temp',$cmdComplexe);
 		}else{
 			tesla::commandSimpleTesla($vehicle_id,$this->getLogicalId());
 		}
