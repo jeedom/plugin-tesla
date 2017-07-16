@@ -137,17 +137,44 @@ class tesla extends eqLogic {
     public static function photoTesla($options,$vehicle_id,$model){
       	  if($model == 'X'){
           	$url = "https://www.tesla.com/configurator/compositor/?model=mx&view=STUD_SIDE&size=1028&options=".$options."&bkba_opt=1";
-          }else if($model == 'S'){
+          	$url_seat = "https://www.tesla.com/configurator/compositor/?model=mx&view=STUD_SEAT&size=1028&options=".$options."&bkba_opt=1";
+          	$url_rear = "https://www.tesla.com/configurator/compositor/?model=mx&view=STUD_REAR&size=1028&options=".$options."&bkba_opt=1";
+          	$url_qtr = "https://www.tesla.com/configurator/compositor/?model=mx&view=STUD_3QTR&size=1028&options=".$options."&bkba_opt=1";
+          	
+	  }else if($model == 'S'){
             $url = "https://www.tesla.com/configurator/compositor/?model=ms&view=STUD_SIDE&size=1028&options=".$options."&bkba_opt=1";
+          	$url_seat = "https://www.tesla.com/configurator/compositor/?model=ms&view=STUD_SEAT&size=1028&options=".$options."&bkba_opt=1";
+          	$url_rear = "https://www.tesla.com/configurator/compositor/?model=ms&view=STUD_REAR&size=1028&options=".$options."&bkba_opt=1";
+          	$url_qtr = "https://www.tesla.com/configurator/compositor/?model=ms&view=STUD_3QTR&size=1028&options=".$options."&bkba_opt=1";
+          	
           }
       	   log::add('tesla', 'debug','Recup image : '.$url);
       	   $my_file=fopen(tesla::imageTesla().'/'.$vehicle_id.'.png', 'w');
-      	   /*curl_setopt($ch, CURLOPT_URL, $url);
-      	   curl_setopt($ch, CURLOPT_FILE, $my_file);
-           //execute la requête
-           $response = curl_exec($ch);
-           curl_close($ch);*/
-      		$ch = curl_init($url);
+      	   $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_FILE, $my_file);
+            $data = curl_exec($ch);
+            $curl_errno = curl_errno($ch);
+            $curl_error = curl_error($ch);
+            curl_close($ch);
+			fclose($fp);
+	    $my_file=fopen(tesla::imageTesla().'/'.$vehicle_id.'_seat.png', 'w');
+      	   $ch = curl_init($url_seat);
+            curl_setopt($ch, CURLOPT_FILE, $my_file);
+            $data = curl_exec($ch);
+            $curl_errno = curl_errno($ch);
+            $curl_error = curl_error($ch);
+            curl_close($ch);
+			fclose($fp);
+	    $my_file=fopen(tesla::imageTesla().'/'.$vehicle_id.'_rear.png', 'w');
+      	   $ch = curl_init($url_rear);
+            curl_setopt($ch, CURLOPT_FILE, $my_file);
+            $data = curl_exec($ch);
+            $curl_errno = curl_errno($ch);
+            $curl_error = curl_error($ch);
+            curl_close($ch);
+			fclose($fp);
+	    $my_file=fopen(tesla::imageTesla().'/'.$vehicle_id.'_qtr.png', 'w');
+      	   $ch = curl_init($url_qtr);
             curl_setopt($ch, CURLOPT_FILE, $my_file);
             $data = curl_exec($ch);
             $curl_errno = curl_errno($ch);
