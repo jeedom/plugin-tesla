@@ -1025,10 +1025,10 @@ $cmd = $this->getCmd(null, 'charge_rate');
     $cmd->setOrder(227);
     $cmd->save();
 
-$cmd = $this->getCmd(null, 'charge_port_door_open_info');
+$cmd = $this->getCmd(null, 'charge_port_door_open');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
-    $cmd->setLogicalId('charge_port_door_open_info');
+    $cmd->setLogicalId('charge_port_door_open');
     $cmd->setName(__('Trappe ouverte', __FILE__));
     $cmd->setIsVisible(1);
      $cmd->setIsHistorized(1);
@@ -1892,10 +1892,10 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setOrder(404);
     $cmd->save();
 
-    $cmd = $this->getCmd(null, 'charge_port_door_open');
+    $cmd = $this->getCmd(null, 'charge_port_door_open_action');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
-    $cmd->setLogicalId('charge_port_door_open');
+    $cmd->setLogicalId('charge_port_door_open_action');
     $cmd->setName(__('Ouvrir la trappe de charge', __FILE__));
     $cmd->setIsVisible(1);
    }
@@ -2117,15 +2117,31 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
  			return $replace;
   		}
 		$version = jeedom::versionAlias($_version);
-		if ($this->getDisplay('hideOn' . $version) == 1) {
-			return '';
-		}
+        
 		$model = $this->getConfiguration('model');
-	      	$lien_doc = dirname(__FILE__) . '/../../doc/images/model_'.$model;
-	      	
+	      	$lien_doc = 'plugins/tesla/doc/images/model_'.$model;
+	      	$lien_all_images = $lien_doc.'/model'.$model.'_';
 	      	// Chargement image original
-	      	$image_original = $lien_doc.'/model'.$model.'_original.png';
+	      	$image_original = $lien_all_images.'original.png';
 	      	$replace['#img_base#'] = $image_original;
+        
+        $cmd_verouillage = $this->getCmd(null, 'locked');
+        if (is_object($cmd_verouillage)){
+       		if($cmd_verouillage->execCmd() == '0'){
+                  $replace['#img_open_lock#'] = $lien_all_images.'close.png';
+            }elseif($cmd_verouillage->execCmd() == '1'){
+              	  $replace['#img_open_lock#'] = $lien_all_images.'open.png';
+            }
+        }
+        $porte_avant_droite = $this->getCmd(null,'pf');
+        if (is_object($porte_avant_droite)){
+       		if($porte_avant_droite->execCmd() == '0'){
+                  $replace['#porte_avant_droite#'] = "";
+            }elseif($porte_avant_droite->execCmd() == '1'){
+              	  $replace['#porte_avant_droite#'] = "<img src='".$lien_all_images."porte_avant_droite.png' width='100%' style='position:absolute;left:0px;' />";
+            }
+        }
+        
 		/*
 		$cmd_titre = $this->getCmd(null, 'titre');
 		if (is_object($cmd_titre) && !($cmd_synced->execCmd() && $cmd_synced->execCmd() !='Aucun')) {
@@ -2191,3 +2207,4 @@ class teslaCmd extends cmd {
 }
 
 ?>
+
