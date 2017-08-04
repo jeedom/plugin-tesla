@@ -2120,7 +2120,12 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
 		if ($this->getDisplay('hideOn' . $version) == 1) {
 			return '';
 		}
-		
+		$model = $this->getConfiguration('model');
+	      	$lien_doc = dirname(__FILE__) . '/../../doc/images/model_'.$model;
+	      	
+	      	// Chargement image original
+	      	$image_original = $lien_doc.'/model'.$model.'_original.png';
+	      	$replace['#img_base#'] = $image_original;
 		/*
 		$cmd_titre = $this->getCmd(null, 'titre');
 		if (is_object($cmd_titre) && !($cmd_synced->execCmd() && $cmd_synced->execCmd() !='Aucun')) {
@@ -2133,10 +2138,10 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
 			$replace['#titre#'] = $name;
 		}
 		*/
-		
+		/*
 		foreach ($this->getCmd('action') as $cmd) {
 			$replace['#cmd_' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
-		}
+		}*/
 		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'eqLogic', 'tesla')));
 	}
 
