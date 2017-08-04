@@ -2110,7 +2110,35 @@ $cmd = $this->getCmd(null, 'charge_port_door_close');
       public function toHtml($_version = 'dashboard') {
 
       }
-     */
+      */
+      public function toHtml($_version = 'dashboard') {
+		$replace = $this->preToHtml($_version);
+ 		if (!is_array($replace)) {
+ 			return $replace;
+  		}
+		$version = jeedom::versionAlias($_version);
+		if ($this->getDisplay('hideOn' . $version) == 1) {
+			return '';
+		}
+		
+		/*
+		$cmd_titre = $this->getCmd(null, 'titre');
+		if (is_object($cmd_titre) && !($cmd_synced->execCmd() && $cmd_synced->execCmd() !='Aucun')) {
+			if (strlen($cmd_titre->execCmd())>17){
+				$name='<marquee behavior="scroll" direction="left" scrollamount="2">'.$cmd_titre->execCmd().'</marquee>';
+			} else {
+				$name=$cmd_titre->execCmd();
+			}
+			$replace['#orititre#'] =$cmd_titre->execCmd();
+			$replace['#titre#'] = $name;
+		}
+		*/
+		
+		foreach ($this->getCmd('action') as $cmd) {
+			$replace['#cmd_' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+		}
+		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'eqLogic', 'tesla')));
+	}
 
     /*     * **********************Getteur Setteur*************************** */
 }
