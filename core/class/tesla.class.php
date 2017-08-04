@@ -1025,10 +1025,10 @@ $cmd = $this->getCmd(null, 'charge_rate');
     $cmd->setOrder(227);
     $cmd->save();
 
-$cmd = $this->getCmd(null, 'charge_port_door_open');
+$cmd = $this->getCmd(null, 'charge_port_door_open_info');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
-    $cmd->setLogicalId('charge_port_door_open');
+    $cmd->setLogicalId('charge_port_door_open_info');
     $cmd->setName(__('Trappe ouverte', __FILE__));
     $cmd->setIsVisible(1);
      $cmd->setIsHistorized(1);
@@ -1892,19 +1892,6 @@ $cmd = $this->getCmd(null, 'gps_as_of');
     $cmd->setOrder(404);
     $cmd->save();
 
-    $cmd = $this->getCmd(null, 'charge_port_door_open');
-   if (!is_object($cmd)) {
-    $cmd = new teslaCmd();
-    $cmd->setLogicalId('charge_port_door_open');
-    $cmd->setName(__('Ouvrir la trappe de charge', __FILE__));
-    $cmd->setIsVisible(1);
-   }
-    $cmd->setType('action');
-    $cmd->setSubType('other');
-    $cmd->setEqLogic_id($this->getId());
-    $cmd->setOrder(405);
-    $cmd->save();
-    
     $cmd = $this->getCmd(null, 'charge_port_door_open');
    if (!is_object($cmd)) {
     $cmd = new teslaCmd();
