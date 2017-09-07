@@ -94,7 +94,7 @@ class tesla extends eqLogic {
           	$eqExiste = eqlogic::byLogicalId($Tesla_Vehicle['vehicle_id'], 'tesla');
           	if(!is_object($eqExiste)){
               	log::add('tesla', 'info','Création du vehicule '.$Tesla_Vehicle['display_name']);
-            	$tesla = new eqLogic;
+            	$tesla = new tesla();
                 $tesla->setEqType_name('tesla');
                 $tesla->setName($Tesla_Vehicle['display_name']);
                 $tesla->setConfiguration('vehicle_id',$Tesla_Vehicle['vehicle_id']);
