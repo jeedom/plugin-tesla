@@ -7,5 +7,7 @@
 	"author" : "Rocket13011",
 	"require" : "2.3",
 	"installation" : "Aucune",
-	"category" : "devicecommunication"
+	"category" : "devicecommunication",
+	"language" : ["fr_FR","en_US","de_DE","sp_SP"],
+"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile","v4"]
 }
