@@ -64,7 +64,7 @@ foreach ($eqLogics as $eqLogic) {
             <div class="col-sm-6">
              <form class="form-horizontal">
                 <fieldset>
-                    <legend><i class="fa fa-arrow-circle-left eqLogicAction cursor" data-action="returnToThumbnailDisplay"></i> {{Général}}<i class='fa fa-cogs eqLogicAction pull-right cursor expertModeVisible' data-action='configure'></i></legend>
+                    <legend><i class="fa fa-arrow-circle-left eqLogicAction cursor" data-action="returnToThumbnailDisplay"></i> {{Général}}<i class="fa fa-cogs eqLogicAction pull-right cursor" data-action="configure"></i></legend>
                     <div class="form-group">
                         <label class="col-lg-3 control-label">{{Nom de la Tesla}}</label>
                         <div class="col-lg-4">
